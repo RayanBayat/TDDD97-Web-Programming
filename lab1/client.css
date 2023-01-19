@@ -1,0 +1,56 @@
+:root {
+    --m-height: 400px;
+    --m-width : 600px;
+}
+body {
+    background-color: gray;
+}
+#content {
+    width: var(--m-width);
+    height: var(--m-height);
+    margin: 100px auto;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 340px 250px;
+    grid-template-rows: 95px 297px 20px;
+}
+#slogan {
+    grid-row: 1 / 4;
+}
+img, #sign-in, #sign-up {
+    border: 1px solid black;
+    background-color: white;
+}
+#sign-in {
+    padding: 5px 0;
+    display: block;
+}
+.mix {
+    padding-bottom: 7px;
+}
+
+h3 {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+input {
+    width: 50%;
+    float: right;
+}
+select {
+    width: 53%;
+    float: right;
+}
+form button {
+    float: right;
+}
+
+#error {
+    display: none;
+    grid-row: 3 / 3;
+    grid-column: 1 / 3;
+    margin: auto;
+    background-color: white;
+    padding: 5px;
+}

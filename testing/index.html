@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="view1">
+  <p>welcome page</p>
+  <!-- <button onclick="showView2()">Show View 2</button> -->
+</div>
+<div id="view2" style="display:none;">
+  <p>profile page</p>
+  <!-- <button onclick="showView1()">Show View 1</button> -->
+</div>
+
+<script>
+    // check if there is a stored view state on page load
+    if (localStorage.getItem("currentView")) {
+      // if so, set the appropriate view to be visible
+      document.getElementById(localStorage.getItem("currentView")).style.display = "block";
+      console.log("neg");
+    } else {
+      // otherwise, set the default view to be visible
+      
+      document.getElementById("view1").style.display = "block";
+      localStorage.setItem("currentView", "view2");
+      console.log("hello");
+    }
+    
+    function showView2() {
+      // hide the current visible view
+      
+      var currentView = document.querySelector(".visible-view");
+      console.log(currentView);
+      currentView.style.display = "none";
+      currentView.classList.remove("visible-view");
+      
+      // show the new view
+      document.getElementById("view2").style.display = "block";
+      document.getElementById("view2").classList.add("visible-view");
+    
+      // store the current view state
+      localStorage.setItem("currentView", "view2");
+    }
+    </script>
+<button onclick="showView2()">Show View 2</button>
+</body>
+</html>

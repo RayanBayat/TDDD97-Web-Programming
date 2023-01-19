@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lab1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="">
+    <link href="client.css" rel="stylesheet" type="text/css">
+    <script src="client.js" type="text/javascript"></script>
+    <script src="serverstub.js" type="text/javascript"></script>
+
+    <script id="welcomeview" type="text/view">
+        
+    </script>
+
+    <script id="profileview" type="text/view">
+
+    </script>
+</head>
+
+<body>
+<main>
+    <section id="content">
+        <section id="slogan">
+            <img src="wimage.png" alt="slogan">
+        </section>
+        
+        <section id="sign-in">
+            <form action="">
+                <section class="mix">
+                    <label for="username"> <b>Email</b> </label>
+                    <input type="email" placeholder="Enter First name" required>
+                </section>
+                <section class="mix">
+                    <label for="pass"> <b>Password</b> </label>
+                    <input type="password" placeholder="Enter First name" required>
+                </section>
+                
+                <button type="submit">Login</button>
+            </form>
+        </section>
+    
+        <section id="sign-up">
+            <h3>Sign up here</h3>
+            <form onsubmit="return validatePsws(this)" action="" method="GET">
+                <section class="mix">
+                    <label for="fname"> <b>First name</b> </label>
+                    <input type="text" placeholder="Enter First name" required>
+                </section>
+                <section class="mix">
+                    <label for="lname"> <b>Family name</b> </label>
+                    <input type="text" placeholder="Enter Last name" required>
+                </section>
+                <section class="mix">
+                    <label for="gender"> <b>Gender</b> </label>
+                <select name="gender">
+                    <option value="none" selected>Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select> 
+                </section>
+                <section class="mix"> <label for="city"> <b>City</b> </label>
+                    <input type="text" placeholder="Enter City" required> <br></section>
+                <section class="mix">
+                    <label for="country"> <b>Country</b> </label>
+                    <input type="text" placeholder="Enter Country" required> 
+                </section>
+                <section class="mix">
+                    <label for="username"> <b>Email</b> </label>
+                <input type="email" placeholder="Enter Email" required> <br>
+                </section>
+                <section class="mix">
+                    <label for="psw"> <b>Password</b> </label>
+                    <input type="password" minlength="2" name="psw1" placeholder="Enter Password" required> <br>
+                </section>
+                <section class="mix">
+                    <label for="psw-repeat"> <b> Repeat Psw </b> </label>
+                    <input type="password" minlength="2" name="psw2" placeholder="Repeat Password" required> <br>
+                </section>
+                <button type="submit">Sign Up</button>
+            </form>
+        </section>
+        <section id="error">The two passwords is not the same</section>
+    </section>
+    
+</main>
+
+
+</body>
+</html>
