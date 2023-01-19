@@ -41,14 +41,14 @@
     
         <section id="sign-up">
             <h3>Sign up here</h3>
-            <form onsubmit="return validatePsws(this)" action="" method="GET">
+            <form onsubmit="return validate(this)" action="" method="GET">
                 <section class="mix">
                     <label for="fname"> <b>First name</b> </label>
-                    <input type="text" placeholder="Enter First name" required>
+                    <input type="text" name="fname" placeholder="Enter First name" required>
                 </section>
                 <section class="mix">
                     <label for="lname"> <b>Family name</b> </label>
-                    <input type="text" placeholder="Enter Last name" required>
+                    <input type="text" name="lname" placeholder="Enter Last name" required>
                 </section>
                 <section class="mix">
                     <label for="gender"> <b>Gender</b> </label>
@@ -59,14 +59,14 @@
                 </select> 
                 </section>
                 <section class="mix"> <label for="city"> <b>City</b> </label>
-                    <input type="text" placeholder="Enter City" required> <br></section>
+                    <input type="text" name="city" placeholder="Enter City" required> <br></section>
                 <section class="mix">
                     <label for="country"> <b>Country</b> </label>
-                    <input type="text" placeholder="Enter Country" required> 
+                    <input type="text" name="country" placeholder="Enter Country" required> 
                 </section>
                 <section class="mix">
                     <label for="username"> <b>Email</b> </label>
-                <input type="email" placeholder="Enter Email" required> <br>
+                <input type="email" name="email" placeholder="Enter Email" required> <br>
                 </section>
                 <section class="mix">
                     <label for="psw"> <b>Password</b> </label>
