@@ -1,7 +1,6 @@
 displayview = function()
 {
     let token = getUserInfo(0);
-
     if (token != null) {
         let profileview = document.getElementById("profileview").innerHTML;
         
@@ -18,7 +17,7 @@ displayview = function()
 
 window.onload = function() {
    displayview();
-   document.getElementById("active").click();
+   //document.getElementById("active").click();
 }
 
 function handle_error(msg)
@@ -32,10 +31,10 @@ function signUp(formObj) {
     let succeeded = serverstub.signUp(formObj);
         if (!succeeded.success) {
             handle_error(succeeded.message);
-            
         }
         else {
             handle_error(succeeded.message);
+            form.reset();
         }
 }
 
@@ -70,28 +69,38 @@ function signIn(form) {
 function getUserInfo(keyValue) {
     let LoggedIn = localStorage.getItem("loggedinusers");
     let jsonobject = JSON.parse(LoggedIn);
-    switch (keyValue) {
-        case 0:
-            return Object.keys(jsonobject)[0];
-        case 1:
-            return Object.values(jsonobject)[0];
+    if (jsonobject != null) {
+        switch (keyValue) {
+            case 0:
+                return Object.keys(jsonobject)[0];
+            case 1:
+                return Object.values(jsonobject)[0];
+        }
     }
 }
 
 function changePsw(event, form) {
     event.preventDefault();
     let token = getUserInfo(0);
+    let email = getUserInfo(1);
+
     let user = localStorage.getItem("users");
     let jsonobject = JSON.parse(user);
-    let data = Object.values(jsonobject)[0];
-    console.log(data.email); 
-     console.log(form.psw0.value);
-    if (form.psw0.value == data.password) {
-        console.log("hrj");
-        let ans = serverstub.changePassword(token, form.psw0, form.psw1);
-        console.log(ans);
+    let userData = jsonobject[email];
+
+    if (form.psw0.value == userData.password) {
+        if (form.psw1.value == form.psw2.value) {
+            let ans = serverstub.changePassword(token, form.psw0.value, form.psw1.value);
+            handle_error(ans.message);
+            form.reset();
+        }
+        else {
+            handle_error("You've entered two different passwords");
+        }
+    }    
+    else {
+        handle_error("Your old password is incorrect!");
     }
-    console.log(data.password);
 } 
 
 function validate(form) {

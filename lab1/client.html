@@ -94,7 +94,7 @@
               
               <section id="Account" class="tabcontent">
                 <h3>Account</h3>
-                <form action="" onsubmit="changePsw(event, this);return false;">
+                <form action="" onsubmit="changePsw(event, this)">
                     <section class="mix">
                         <label for="psw"> <b>Password</b> </label>
                         <input type="password" minlength="2" name="psw0" placeholder="Old Password" required> <br>
@@ -109,7 +109,7 @@
                     </section>
                     <button type="submit"> Change password </button>
                 </form>
-                
+                <section id="error"></section>
               </section>
         
      </script>
