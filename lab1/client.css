@@ -2,6 +2,9 @@
     --m-height: 400px;
     --m-width : 600px;
 }
+* {
+    box-sizing: border-box
+}
 body {
     background-color: gray;
 }
@@ -55,10 +58,33 @@ form button {
     padding: 5px;
 }
 
-#browse, #account {
-    display: none;
+.tab {
+    float: left;
+    background-color: #f1f1f1;
+    width: 30%;
+    height: 3100%;
+}
+  
+.tab button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 20px;
 }
 
-.active {
-    background-color: red;
+.tab button.active, .tab button:hover {
+    background-color: #ccc;
+}
+
+.tabcontent {
+    float: left;
+    padding: 0px 12px;
+    border: 1px solid #ccc;
+    width: 69%;
+    margin-left: 1%;
+    height: 100%;
+}
+
+#browser, #account {
+    display: none;
 }

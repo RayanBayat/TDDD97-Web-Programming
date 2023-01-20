@@ -1,24 +1,24 @@
 displayview = function()
 {
-    let token = localStorage.getItem("Token");
-    
+    let token = getUserInfo(0);
+
     if (token != null) {
         let profileview = document.getElementById("profileview").innerHTML;
+        
         document.getElementById("main").innerHTML = profileview;
+        document.getElementById("active").click();
     }
     else {
         let welcomeview = document.getElementById("welcomeview").innerHTML;
         document.getElementById("main").innerHTML = welcomeview;
+        
     }
-    let LoggedIn= localStorage.getItem("loggedinusers");
-    console.log(LoggedIn);
-    let jsonobject = JSON.parse(LoggedIn);
-    console.log(jsonobject[1]);
-    // // return false;
+    
 }
 
 window.onload = function() {
    displayview();
+   document.getElementById("active").click();
 }
 
 function handle_error(msg)
@@ -54,10 +54,10 @@ function signUpObj(form)
 
 function signIn(form) {
     let answer = serverstub.signIn(form.email.value, form.psw.value);
-    console.log(answer);
+    //console.log(answer);
     if(answer.success)
     {
-        window.localStorage.setItem("Token",answer.data);
+        //window.localStorage.setItem("Token",answer.data);
         displayview();
         
     }
@@ -67,10 +67,33 @@ function signIn(form) {
     }
 
 }
+function getUserInfo(keyValue) {
+    let LoggedIn = localStorage.getItem("loggedinusers");
+    let jsonobject = JSON.parse(LoggedIn);
+    switch (keyValue) {
+        case 0:
+            return Object.keys(jsonobject)[0];
+        case 1:
+            return Object.values(jsonobject)[0];
+    }
+}
 
+function changePsw(event, form) {
+    event.preventDefault();
+    let token = getUserInfo(0);
+    let user = localStorage.getItem("users");
+    let jsonobject = JSON.parse(user);
+    let data = Object.values(jsonobject)[0];
+    console.log(data.email); 
+     console.log(form.psw0.value);
+    if (form.psw0.value == data.password) {
+        console.log("hrj");
+        let ans = serverstub.changePassword(token, form.psw0, form.psw1);
+        console.log(ans);
+    }
+    console.log(data.password);
+} 
 
-
-//validates
 function validate(form) {
    const pass1 = form.psw1.value;
    const pass2 = form.psw2.value;
@@ -84,24 +107,22 @@ function validate(form) {
     
 }
 
-
-
-
-function goHome() {
-    document.getElementById("home").style.display = "block";
-    document.getElementById("home").classList.add("active");
-    document.getElementById("browse").style.display = "none";
-    document.getElementById("account").style.display = "none";
+function openTab(event, tabName) {
+    let tabContent, tabLinks;
+    tabContent = document.getElementsByClassName("tabcontent");
+    for (let index = 0; index < tabContent.length; index++) {
+      tabContent[index].style.display = "none";
+    }
+    tabLinks = document.getElementsByClassName("tablinks");
+    for (let index = 0; index < tabLinks.length; index++) {
+      tabLinks[index].className = tabLinks[index].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    event.currentTarget.className += " active";
 }
-function goBrowse() {
-    document.getElementById("home").style.display = "none";
-    document.getElementById("browse").style.display = "block";
-    document.getElementById("browse").classList.add("active");
-    document.getElementById("account").style.display = "none";
-}
-function goAccount() {
-    document.getElementById("home").style.display = "none";
-    document.getElementById("browse").style.display = "none";
-    document.getElementById("account").style.display = "block";
-    document.getElementById("account").classList.add("active");
+
+function logOut() {
+    let token = getUserInfo(0);
+    serverstub.signOut(token);
+    displayview();
 }

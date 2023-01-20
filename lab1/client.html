@@ -74,19 +74,44 @@
     </script>
 
     <script id="profileview" type="text/view"> 
-        <button class="active" onclick="goHome()">Home</button> 
-        <button onclick="goBrowse()">Browse</button>
-        <button onclick="goAccount()">Account</button>
-        <section id="home">
-            <h2>Home</h2>
-        </section>
-
-        <section id="browse">
-            <h2>Browse</h2>
-        </section>
         
-        <section id="account">
-            <h2>Account</h2>
+            <section class="tab">
+                <button class="tablinks" onclick="openTab(event, 'Home')" id="active">Home</button>
+                <button class="tablinks" onclick="openTab(event, 'Browser')">Browse</button>
+                <button class="tablinks" onclick="openTab(event, 'Account')">Account</button>
+                <button class="tablinks" onclick="logOut()">Log Out</button>
+              </section>
+              
+              <section id="Home" class="tabcontent">
+                <h3>Home</h3>
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Esse sint exercitationem cum velit laborum corrupti obcaecati expedita magnam dolore laudantium.</p>
+              </section>
+              
+              <section id="Browser" class="tabcontent">
+                <h3>Browser</h3>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti ipsa recusandae, tenetur distinctio voluptatibus iusto tempora rem eum nostrum veritatis aut. Expedita maiores, sunt accusamus incidunt placeat nemo alias aliquam ut corporis necessitatibus, cumque similique impedit iste dolor iure et esse vero eos ad nam hic eius enim? Quod, tempora?</p>
+              </section>
+              
+              <section id="Account" class="tabcontent">
+                <h3>Account</h3>
+                <form action="" onsubmit="changePsw(event, this);return false;">
+                    <section class="mix">
+                        <label for="psw"> <b>Password</b> </label>
+                        <input type="password" minlength="2" name="psw0" placeholder="Old Password" required> <br>
+                    </section>
+                    <section class="mix">
+                        <label for="psw"> <b>Old Password</b> </label>
+                        <input type="password" minlength="2" name="psw1" placeholder="New Password" required> <br>
+                    </section>
+                    <section class="mix">
+                        <label for="psw-repeat"> <b> Confirm password </b> </label>
+                        <input type="password" minlength="2" name="psw2" placeholder="Confirm Password" required> <br>
+                    </section>
+                    <button type="submit"> Change password </button>
+                </form>
+                
+              </section>
+        
      </script>
 </head>
 
