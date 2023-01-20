@@ -1,11 +1,20 @@
 displayview = function()
 {
     let token = getUserInfo(0);
+    let userData;
     if (token != null) {
         let profileview = document.getElementById("profileview").innerHTML;
-        
         document.getElementById("main").innerHTML = profileview;
         document.getElementById("active").click();
+        userData = serverstub.getUserDataByToken(token);
+        
+        document.getElementById("profileList").innerHTML += 
+        "<li>" + "Email: " + userData.data.email + "</li>" +
+        "<li>" + "First name: " + userData.data.firstname + "</li>" + 
+        "<li>" + "Family name: " + userData.data.familyname + "</li>" + 
+        "<li>" + "Gender: " + userData.data.gender + "</li>"  +
+        "<li>" + "City: " + userData.data.city + "</li>" + 
+        "<li>" + "Country: " + userData.data.country + "</li>";
     }
     else {
         let welcomeview = document.getElementById("welcomeview").innerHTML;
@@ -31,10 +40,10 @@ function signUp(formObj) {
     let succeeded = serverstub.signUp(formObj);
         if (!succeeded.success) {
             handle_error(succeeded.message);
+            
         }
         else {
             handle_error(succeeded.message);
-            form.reset();
         }
 }
 
@@ -103,17 +112,18 @@ function changePsw(event, form) {
     }
 } 
 
-function validate(form) {
+function validate(event, form) {
+    event.preventDefault();
    const pass1 = form.psw1.value;
    const pass2 = form.psw2.value;
     if(pass1 == pass2) {
         formObj = signUpObj(form);
         signUp(formObj);
+        form.reset();
     }
     else {
         handle_error("You've entered two different passwords");
-    }
-    
+    } 
 }
 
 function openTab(event, tabName) {

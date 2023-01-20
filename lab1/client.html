@@ -31,7 +31,7 @@
         
             <section id="sign-up">
                 <h3>Sign up here</h3>
-                <form onsubmit=" validate(this);return false;" action="" method="GET">
+                <form onsubmit=" validate(event, this);return false;" action="" method="GET">
                     <section class="mix">
                         <label for="fname"> <b>First name</b> </label>
                         <input type="text" name="fname" placeholder="Enter First name" required>
@@ -84,7 +84,11 @@
               
               <section id="Home" class="tabcontent">
                 <h3>Home</h3>
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Esse sint exercitationem cum velit laborum corrupti obcaecati expedita magnam dolore laudantium.</p>
+                <section>
+                    <ul id="profileList">
+                        <li></li>
+                    </ul>
+                </section>
               </section>
               
               <section id="Browser" class="tabcontent">
