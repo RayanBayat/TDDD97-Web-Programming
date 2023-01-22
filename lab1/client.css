@@ -57,12 +57,12 @@ form button {
     background-color: white;
     padding: 5px;
 }
+/* ----------------------------------------- */
 
 .tab {
-    float: left;
     background-color: #f1f1f1;
     width: 30%;
-    height: 3100%;
+    float: left;
 }
   
 .tab button {
@@ -77,14 +77,48 @@ form button {
 }
 
 .tabcontent {
-    float: left;
-    padding: 0px 12px;
-    border: 1px solid #ccc;
-    width: 69%;
-    margin-left: 1%;
-    height: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.tabcontent .postData {
+    margin-left: 5%;
+    border-right: 1px solid #ccc;
+    padding-right: 5%;
+    width: 50%;
+}
+.postData {
+    display: none;
+}
+textarea {
+    width: 100%;
+}
+
+.tabcontent .postData form button {
+    float: none;
+}
+
+.posts p {
+    overflow-wrap: break-word;
+}
+
+.error {
+    padding: 2%;
+    background: #ccc;
+    color: rgb(192, 43, 43);
+    display: none;
 }
 
 #browser, #account {
     display: none;
+}
+
+.form {
+    flex-basis: 100%;
+    margin-bottom: 2%;
+}
+.post, .test {
+    flex-grow: 1;
 }

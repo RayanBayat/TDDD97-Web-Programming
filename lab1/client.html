@@ -82,38 +82,78 @@
                 <button class="tablinks" onclick="logOut()">Log Out</button>
               </section>
               
-              <section id="Home" class="tabcontent">
-                <h3>Home</h3>
+            <section id="Home" class="tabcontent">
                 <section>
-                    <ul id="profileList">
-                        <li></li>
+                    <ul class="profileList">
+                        
                     </ul>
+                    <section class="error"></section>
                 </section>
-              </section>
+
+                <section class="postData">
+                    <h4>What's on your mind</h4>
+                    <form action="" onsubmit="post(event, this)">
+                        <textarea name="postMsg" id="" rows="5"></textarea>
+                        <button type="submit">Post</button>
+                    </form>
+                    <button onclick="showPosts()">Reload wall</button>
+
+                    <section class="posts">
+                       
+                    </section>
+                </section>
+            </section>
               
-              <section id="Browser" class="tabcontent">
-                <h3>Browser</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti ipsa recusandae, tenetur distinctio voluptatibus iusto tempora rem eum nostrum veritatis aut. Expedita maiores, sunt accusamus incidunt placeat nemo alias aliquam ut corporis necessitatibus, cumque similique impedit iste dolor iure et esse vero eos ad nam hic eius enim? Quod, tempora?</p>
-              </section>
+            <section id="Browser" class="tabcontent">
+                <section class="form">
+                    <form action="" onsubmit="getUser(event, this)">
+                        <label for="userEmail">Search by email: </label>
+                        <input type="email" name="userEmail">
+                        <button type="submit">Search</button>
+                    </form>
+                </section>
+
+                <section class="test">
+                    <ul class="profileList">
+                        
+                    </ul>
+                    <section class="error"></section>
+                </section>
+
+                <section class="postData">
+                    <h4>What's on your mind</h4>
+                    <form action="" onsubmit="post(event, this)">
+                        <textarea name="postMsg" id="" rows="5"></textarea>
+                        <button type="submit">Post</button>
+                    </form>
+                    <button onclick="showPosts()">Reload wall</button>
+
+                    <section class="posts">
+                       
+                    </section>
+                </section>
+            </section>
               
               <section id="Account" class="tabcontent">
-                <h3>Account</h3>
+                
                 <form action="" onsubmit="changePsw(event, this)">
                     <section class="mix">
                         <label for="psw"> <b>Password</b> </label>
                         <input type="password" minlength="2" name="psw0" placeholder="Old Password" required> <br>
                     </section>
+
                     <section class="mix">
                         <label for="psw"> <b>Old Password</b> </label>
                         <input type="password" minlength="2" name="psw1" placeholder="New Password" required> <br>
                     </section>
+
                     <section class="mix">
                         <label for="psw-repeat"> <b> Confirm password </b> </label>
                         <input type="password" minlength="2" name="psw2" placeholder="Confirm Password" required> <br>
                     </section>
+
                     <button type="submit"> Change password </button>
                 </form>
-                <section id="error"></section>
               </section>
         
      </script>

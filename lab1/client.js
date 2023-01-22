@@ -7,14 +7,8 @@ displayview = function()
         document.getElementById("main").innerHTML = profileview;
         document.getElementById("active").click();
         userData = serverstub.getUserDataByToken(token);
-        
-        document.getElementById("profileList").innerHTML += 
-        "<li>" + "Email: " + userData.data.email + "</li>" +
-        "<li>" + "First name: " + userData.data.firstname + "</li>" + 
-        "<li>" + "Family name: " + userData.data.familyname + "</li>" + 
-        "<li>" + "Gender: " + userData.data.gender + "</li>"  +
-        "<li>" + "City: " + userData.data.city + "</li>" + 
-        "<li>" + "Country: " + userData.data.country + "</li>";
+        showUserData(userData);
+        showPosts(token);
     }
     else {
         let welcomeview = document.getElementById("welcomeview").innerHTML;
@@ -23,10 +17,19 @@ displayview = function()
     }
     
 }
-
+function showUserData(userData = null, index = 0) {
+    if (userData != null) {
+        document.getElementsByClassName("profileList")[index].innerHTML += 
+        "<li>" + "Email: " + userData.data.email + "</li>" +
+        "<li>" + "First name: " + userData.data.firstname + "</li>" + 
+        "<li>" + "Family name: " + userData.data.familyname + "</li>" + 
+        "<li>" + "Gender: " + userData.data.gender + "</li>"  +
+        "<li>" + "City: " + userData.data.city + "</li>" + 
+        "<li>" + "Country: " + userData.data.country + "</li>";
+    }
+}
 window.onload = function() {
    displayview();
-   //document.getElementById("active").click();
 }
 
 function handle_error(msg)
@@ -115,7 +118,7 @@ function changePsw(event, form) {
 function validate(event, form) {
     event.preventDefault();
    const pass1 = form.psw1.value;
-   const pass2 = form.psw2.value;
+   const pass2 = form.psw2.value; 
     if(pass1 == pass2) {
         formObj = signUpObj(form);
         signUp(formObj);
@@ -136,7 +139,7 @@ function openTab(event, tabName) {
     for (let index = 0; index < tabLinks.length; index++) {
       tabLinks[index].className = tabLinks[index].className.replace(" active", "");
     }
-    document.getElementById(tabName).style.display = "block";
+    document.getElementById(tabName).style.display = "flex";
     event.currentTarget.className += " active";
 }
 
@@ -144,4 +147,73 @@ function logOut() {
     let token = getUserInfo(0);
     serverstub.signOut(token);
     displayview();
+}
+
+function post(event, form, e = null) {
+    event.preventDefault();
+    let email;
+    let msg = form.postMsg.value;
+    let token = getUserInfo(0);
+    if (email == null) {
+        email = getUserInfo(1);
+    }
+    else {
+        email = e;
+    }
+    let name = getName(token);
+
+    let ans = serverstub.postMessage(token, msg, email);
+    if (ans.success) {
+        
+        msgData.data.forEach(element => {
+        document.getElementById("posts").innerHTML += "<p>"  + name + ": " + element.content + "</p>";
+    });
+    form.reset();
+    }
+    else {
+        document.getElementsByClassName(".error").innertext = ans.message; 
+        document.getElementsByClassName(".error").style.display= "block"; 
+    }
+}
+
+function showPosts(t = null, e = null, index = 0) {
+    let token, email;
+    if (token == null) {
+        token = getUserInfo(0);
+        email = getUserInfo(1);
+    } else {
+        token = t;
+        email = e;
+    }
+    let name = getName(token);
+
+    let msgData = serverstub.getUserMessagesByEmail(token, email);
+        console.log("inside: " + msgData);
+        document.getElementsByClassName("postData")[index].style.display = "block";
+        msgData.data.forEach(element => {
+            document.getElementsByClassName("posts")[index].innerHTML += "<p>"  + name + ": " + element.content + "</p>";
+        
+    });
+}
+
+function getName(token, email = null) {
+    if (email == null) {
+        let myData = serverstub.getUserDataByToken(token);
+        let fullName = myData.data.firstname.concat(" ", myData.data.familyname);
+        return fullName;
+    }
+    let userData = serverstub.getUserDataByEmail(token, email);
+    let fullName = userData.data.firstname.concat(" ", userData.data.familyname);
+    return fullName;
+}
+
+function getUser(event, form) {
+    let token = getUserInfo(0);
+    event.preventDefault();
+    let email = form.userEmail.value;
+    let userData = serverstub.getUserDataByEmail(token, email);
+    let data = serverstub.getUserMessagesByEmail(token, email);
+   
+    showUserData(userData, 1);
+    showPosts(token, email, 1);
 }
