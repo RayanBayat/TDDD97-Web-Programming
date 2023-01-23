@@ -90,7 +90,10 @@ form button {
     padding-right: 5%;
     width: 50%;
 }
+.postData {
 
+    display: none;
+}
 textarea {
     width: 100%;
 }
@@ -120,9 +123,4 @@ textarea {
 }
 .post, .test {
     flex-grow: 1;
-}
-
-#appwindow {
-    width: 1000px;
-    margin: 0 auto 0 auto;
 }

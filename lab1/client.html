@@ -74,7 +74,7 @@
     </script>
 
     <script id="profileview" type="text/view"> 
-        <section id="appwindow">
+
             <section class="tab">
                 <button class="tablinks" onclick="openTab(event, 'Home')" id="active">Home</button>
                 <button class="tablinks" onclick="openTab(event, 'Browser')">Browse</button>
@@ -104,7 +104,7 @@
                 </section>
             </section>
               
-            <section id="Browser" class="tabcontent" onclick="showotherposts(this)">
+            <section id="Browser" class="tabcontent">
                 <section class="form">
                     <form action="" onsubmit="getUser(event, this)">
                         <label for="userEmail">Search by email: </label>
@@ -113,7 +113,7 @@
                     </form>
                 </section>
 
-                <section class="test">
+                <section id="test">
                     <ul class="profileList">
                         
                     </ul>
@@ -126,7 +126,7 @@
                         <textarea name="postMsg" id="" rows="5"></textarea>
                         <button type="submit">Post</button>
                     </form>
-                    <button >Reload awall</button>
+                    <button onclick="showPosts()">Reload wall</button>
 
                     <section class="posts">
                     </section>
@@ -154,7 +154,6 @@
                     <button type="submit"> Change password </button>
                 </form>
               </section>
-            </section>
      </script>
 </head>
 
