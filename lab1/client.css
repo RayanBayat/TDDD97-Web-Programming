@@ -63,6 +63,7 @@ form button {
     background-color: #f1f1f1;
     width: 30%;
     float: left;
+    position: sticky;
 }
   
 .tab button {
@@ -119,4 +120,9 @@ textarea {
 }
 .post, .test {
     flex-grow: 1;
+}
+
+#appwindow {
+    width: 1000px;
+    margin: 0 auto 0 auto;
 }
