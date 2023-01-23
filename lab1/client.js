@@ -1,3 +1,7 @@
+window.onload = function() {
+    displayview();
+ }
+
 displayview = function()
 {
     let token = getUserInfo(0);
@@ -28,9 +32,7 @@ function showUserData(userData = null, index = 0) {
         "<li>" + "Country: " + userData.data.country + "</li>";
     }
 }
-window.onload = function() {
-   displayview();
-}
+
 
 function handle_error(msg)
 {
@@ -174,8 +176,9 @@ function post(event, form, e = null) {
         document.getElementsByClassName(".error").innertext = ans.message; 
         document.getElementsByClassName(".error").style.display= "block"; 
     }
+    showPosts();
 }
-
+//??
 function showPosts(t = null, e = null, index = 0) {
     let token, email;
     if (token == null) {
@@ -190,10 +193,16 @@ function showPosts(t = null, e = null, index = 0) {
     let msgData = serverstub.getUserMessagesByEmail(token, email);
         console.log("inside: " + msgData);
         document.getElementsByClassName("postData")[index].style.display = "block";
+        document.getElementsByClassName("posts")[index].innerHTML="";
         msgData.data.forEach(element => {
             document.getElementsByClassName("posts")[index].innerHTML += "<p>"  + name + ": " + element.content + "</p>";
         
     });
+}
+
+function showotherposts(data)
+{
+    console.log(data);
 }
 
 function getName(token, email = null) {
