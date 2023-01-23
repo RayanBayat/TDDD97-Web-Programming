@@ -5,26 +5,33 @@ window.onload = function() {
 displayview = function()
 {
     let token = getUserInfo(0);
-    let userData;
     if (token != null) {
-        let profileview = document.getElementById("profileview").innerHTML;
-        document.getElementById("main").innerHTML = profileview;
-        document.getElementById("active").click();
-        userData = serverstub.getUserDataByToken(token);
-        showUserData(userData);
-        showPosts(token);
+        displayProfile(token);
     }
     else {
-        let welcomeview = document.getElementById("welcomeview").innerHTML;
-        document.getElementById("main").innerHTML = welcomeview;
-        
+        displayWelcome();
     }
-    
 }
+
+function displayProfile(token) {
+    let profileview = document.getElementById("profileview").innerHTML;
+    document.getElementById("main").innerHTML = profileview;
+    document.getElementById("active").click();
+    let userData = serverstub.getUserDataByToken(token);
+    showUserData(userData);
+    showPosts();
+}
+
+function displayWelcome() {
+    let welcomeview = document.getElementById("welcomeview").innerHTML;
+    document.getElementById("main").innerHTML = welcomeview;
+}
+
 function showUserData(userData = null, index = 0) {
+    document.getElementsByClassName("profileList")[index].innerHTML = "";
     if (userData != null) {
         document.getElementsByClassName("profileList")[index].innerHTML += 
-        "<li>" + "Email: " + userData.data.email + "</li>" +
+        '<li id="otherEmail">' + "Email: " + userData.data.email + "</li>" +
         "<li>" + "First name: " + userData.data.firstname + "</li>" + 
         "<li>" + "Family name: " + userData.data.familyname + "</li>" + 
         "<li>" + "Gender: " + userData.data.gender + "</li>"  +
@@ -34,18 +41,16 @@ function showUserData(userData = null, index = 0) {
 }
 
 
-function handle_error(msg)
+function handle_error(msg,  index = 0)
 {
-    document.getElementById("error").innerHTML = msg;
-    document.getElementById("error").style.display = "block";
+    document.getElementsByClassName("error")[index].innerHTML = msg;
+    document.getElementsByClassName("error")[index].style.display = "block";
 }
-
 
 function signUp(formObj) {
     let succeeded = serverstub.signUp(formObj);
         if (!succeeded.success) {
             handle_error(succeeded.message);
-            
         }
         else {
             handle_error(succeeded.message);
@@ -67,19 +72,16 @@ function signUpObj(form)
 
 function signIn(form) {
     let answer = serverstub.signIn(form.email.value, form.psw.value);
-    //console.log(answer);
     if(answer.success)
     {
-        //window.localStorage.setItem("Token",answer.data);
-        displayview();
-        
+        displayview();    
     }
     else
     {
         handle_error(answer.message);
     }
-
 }
+
 function getUserInfo(keyValue) {
     let LoggedIn = localStorage.getItem("loggedinusers");
     let jsonobject = JSON.parse(LoggedIn);
@@ -151,59 +153,62 @@ function logOut() {
     displayview();
 }
 
-function post(event, form, e = null) {
+function post(event, form,  index = 0) {
     event.preventDefault();
-    let email;
     let msg = form.postMsg.value;
     let token = getUserInfo(0);
-    if (email == null) {
-        email = getUserInfo(1);
-    }
-    else {
-        email = e;
-    }
+    let email = getUserInfo(1);
+    
     let name = getName(token);
-
+    let otherEmail = document.getElementById("test").querySelector("#otherEmail");
+    
+    if (otherEmail != null) {
+        otherEmail = otherEmail.innerHTML;
+        otherEmail = otherEmail.substring(otherEmail.indexOf(' ') + 1);
+        email = otherEmail;
+        index = 1;
+    }
     let ans = serverstub.postMessage(token, msg, email);
     if (ans.success) {
-        
-        msgData.data.forEach(element => {
-        document.getElementById("posts").innerHTML += "<p>"  + name + ": " + element.content + "</p>";
-    });
-    form.reset();
+        let msgData = serverstub.getUserMessagesByEmail(token, email);
+        document.getElementsByClassName("posts")[index].innerHTML = "<p>"  + name + ": " + msgData.data[0].content + "</p>" 
+        + document.getElementsByClassName("posts")[index].innerHTML;
+        form.reset();
     }
     else {
-        document.getElementsByClassName(".error").innertext = ans.message; 
-        document.getElementsByClassName(".error").style.display= "block"; 
+        handle_error(ans.message); 
     }
-    showPosts();
 }
-//??
+
 function showPosts(t = null, e = null, index = 0) {
     let token, email;
-    if (token == null) {
+    if (t == null) {
         token = getUserInfo(0);
-        email = getUserInfo(1);
     } else {
         token = t;
+    }
+    if (e == null) {
+        
+        email = getUserInfo(1);
+    } else {
         email = e;
     }
-    let name = getName(token);
-
-    let msgData = serverstub.getUserMessagesByEmail(token, email);
-        console.log("inside: " + msgData);
-        document.getElementsByClassName("postData")[index].style.display = "block";
-        document.getElementsByClassName("posts")[index].innerHTML="";
-        msgData.data.forEach(element => {
-            document.getElementsByClassName("posts")[index].innerHTML += "<p>"  + name + ": " + element.content + "</p>";
-        
+    let otherEmail = document.getElementById("test").querySelector("#otherEmail");
+    let msgData;
+    if (otherEmail == null) {
+        msgData = serverstub.getUserMessagesByEmail(token, email);
+    } else {
+        otherEmail = otherEmail.innerHTML;
+        otherEmail = otherEmail.substring(otherEmail.indexOf(' ') + 1);
+        msgData = serverstub.getUserMessagesByEmail(token, otherEmail);
+    }
+    document.getElementsByClassName("postData")[index].style.display = "block";
+    document.getElementsByClassName("posts")[index].innerHTML = "";
+    msgData.data.forEach(element => {
+        document.getElementsByClassName("posts")[index].innerHTML += "<p>"  + getName(token, element.writer) + ": " + element.content + "</p>";
     });
 }
 
-function showotherposts(data)
-{
-    console.log(data);
-}
 
 function getName(token, email = null) {
     if (email == null) {
@@ -217,12 +222,20 @@ function getName(token, email = null) {
 }
 
 function getUser(event, form) {
-    let token = getUserInfo(0);
+    
     event.preventDefault();
-    let email = form.userEmail.value;
-    let userData = serverstub.getUserDataByEmail(token, email);
-    let data = serverstub.getUserMessagesByEmail(token, email);
-   
-    showUserData(userData, 1);
-    showPosts(token, email, 1);
+    let token = getUserInfo(0);
+    let otherEmail = form.userEmail.value;
+    let userData = serverstub.getUserDataByEmail(token, otherEmail);
+    if (userData.success) {
+        document.getElementsByClassName("error")[1].style.display = "none";
+        showUserData(userData, 1);
+        showPosts(token, otherEmail, 1);
+        form.reset();
+    }
+    else {
+        document.getElementsByClassName("postData")[1].style.display = "none";
+        document.getElementsByClassName("profileList")[1].innerHTML = "";
+        handle_error(userData.message, 1);
+    }
 }

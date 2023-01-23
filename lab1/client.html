@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Lab1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="">
+    <link rel="icon" type="image/png" href="image.png">
     <link href="client.css" rel="stylesheet" type="text/css">
-    <script src="client.js" type="text/javascript"></script>
-    <script src="serverstub.js" type="text/javascript"></script>
+    <script src="client.js"></script>
+    <script src="serverstub.js"></script>
 
     <script id="welcomeview" type="text/view">
         <section id="content">
@@ -74,7 +74,7 @@
     </script>
 
     <script id="profileview" type="text/view"> 
-        <section id="appwindow">
+        
             <section class="tab">
                 <button class="tablinks" onclick="openTab(event, 'Home')" id="active">Home</button>
                 <button class="tablinks" onclick="openTab(event, 'Browser')">Browse</button>
@@ -104,7 +104,7 @@
                 </section>
             </section>
               
-            <section id="Browser" class="tabcontent" onclick="showotherposts(this)">
+            <section id="Browser" class="tabcontent">
                 <section class="form">
                     <form action="" onsubmit="getUser(event, this)">
                         <label for="userEmail">Search by email: </label>
@@ -113,29 +113,28 @@
                     </form>
                 </section>
 
-                <section class="test">
+                <section id="test">
                     <ul class="profileList">
                         
                     </ul>
                     <section class="error"></section>
                 </section>
-
+                
                 <section class="postData">
                     <h4>What's on your mind</h4>
                     <form action="" onsubmit="post(event, this)">
                         <textarea name="postMsg" id="" rows="5"></textarea>
                         <button type="submit">Post</button>
                     </form>
-                    <button >Reload awall</button>
+                    <button onclick="showPosts()">Reload wall</button>
 
                     <section class="posts">
-                       
                     </section>
                 </section>
             </section>
               
               <section id="Account" class="tabcontent">
-                
+                <section class="form">
                 <form action="" onsubmit="changePsw(event, this)">
                     <section class="mix">
                         <label for="psw"> <b>Password</b> </label>
@@ -154,15 +153,15 @@
 
                     <button type="submit"> Change password </button>
                 </form>
-              </section>
+            </section>
             </section>
      </script>
 </head>
 
 <body>
-<section id="main">
+<div id="main">
 
-<section>
+</div>
 
 
 </body>

@@ -63,7 +63,7 @@ form button {
     background-color: #f1f1f1;
     width: 30%;
     float: left;
-    position: sticky;
+    position: fixed;
 }
   
 .tab button {
@@ -82,6 +82,9 @@ form button {
     flex-direction: row-reverse;
     justify-content: flex-end;
     flex-wrap: wrap;
+    width: 70%;
+    float: right;
+    
 }
 
 .tabcontent .postData {
@@ -91,6 +94,7 @@ form button {
     width: 50%;
 }
 .postData {
+
     display: none;
 }
 textarea {
@@ -119,12 +123,10 @@ textarea {
 .form {
     flex-basis: 100%;
     margin-bottom: 2%;
-}
-.post, .test {
-    flex-grow: 1;
+    width: 100%;
+    padding-left: 2%;
 }
 
-#appwindow {
-    width: 1000px;
-    margin: 0 auto 0 auto;
+.post, .test {
+    flex-grow: 1;
 }
