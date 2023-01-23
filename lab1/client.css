@@ -89,9 +89,7 @@ form button {
     padding-right: 5%;
     width: 50%;
 }
-.postData {
-    display: none;
-}
+
 textarea {
     width: 100%;
 }

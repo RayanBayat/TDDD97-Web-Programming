@@ -8,7 +8,7 @@ displayview = function()
         document.getElementById("active").click();
         userData = serverstub.getUserDataByToken(token);
         showUserData(userData);
-        showPosts(token);
+        showPosts();
     }
     else {
         let welcomeview = document.getElementById("welcomeview").innerHTML;
@@ -149,24 +149,21 @@ function logOut() {
     displayview();
 }
 
-function post(event, form, e = null) {
+function post(event, form,  index = 0) {
     event.preventDefault();
-    let email;
     let msg = form.postMsg.value;
     let token = getUserInfo(0);
-    if (email == null) {
-        email = getUserInfo(1);
-    }
-    else {
-        email = e;
-    }
+    let email = getUserInfo(1);
     let name = getName(token);
 
     let ans = serverstub.postMessage(token, msg, email);
+
     if (ans.success) {
-        
+        let msgData = serverstub.getUserMessagesByToken(token);
+        //document.getElementsByClassName("postData")[0].style.display = "block";
         msgData.data.forEach(element => {
-        document.getElementById("posts").innerHTML += "<p>"  + name + ": " + element.content + "</p>";
+            //console.log(document.getElementsByClassName("posts")[index]);
+        document.getElementsByClassName("posts")[index].innerHTML += "<p>"  + name + ": " + element.content + "</p>";
     });
     form.reset();
     }
@@ -178,18 +175,21 @@ function post(event, form, e = null) {
 
 function showPosts(t = null, e = null, index = 0) {
     let token, email;
-    if (token == null) {
+    if (t == null) {
         token = getUserInfo(0);
-        email = getUserInfo(1);
     } else {
         token = t;
+    }
+    if (e == null) {
+        email = getUserInfo(1);
+    } else {
         email = e;
     }
     let name = getName(token);
 
     let msgData = serverstub.getUserMessagesByEmail(token, email);
-        console.log("inside: " + msgData);
-        document.getElementsByClassName("postData")[index].style.display = "block";
+        console.log(msgData);
+        //document.getElementsByClassName("postData")[index].style.display = "block";
         msgData.data.forEach(element => {
             document.getElementsByClassName("posts")[index].innerHTML += "<p>"  + name + ": " + element.content + "</p>";
         
