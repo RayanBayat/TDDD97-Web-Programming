@@ -25,7 +25,12 @@ def generate_token():
         token += random.choice(letters)
     return token
 
-
+def token_to_email(token):
+    for user in loggedInUsers:
+        if token == user["token"]:
+            # Found a matching token, extract the email and break the loop
+            email = user['email']
+            return email
 
 @app.route('/',methods= ['GET'])
 def root():
@@ -106,54 +111,104 @@ def sign_out():
 def change_password():
     token = request.headers.get("Token")
     data = request.get_json()
-    email = ""
-
+    
     oldPassword = data['oldpsw']
     newPassword = data['newpsw']
+    email = token_to_email(token)
 
-    for user in loggedInUsers:
-        if token == user["token"]:
-            # Found a matching token, extract the email and break the loop
-            email = user['email']
-            break
-    if database_helper.find_user(email, oldPassword):
-        print("nigga1")
-        if oldPassword != newPassword:
-            print("nigga2")
-            if len(newPassword) > 6:
-                print("nigga3")
-                if database_helper.update_user_password(email, newPassword):
-                    print("nigga4")
-                    return "",204
-                else:
+    
+    if email:
+
+        if database_helper.find_user(email, oldPassword):
+            
+            if oldPassword != newPassword:
+                
+                if len(newPassword) > 6:
+                
+                    if database_helper.update_user_password(email, newPassword):
+                        
+                        return "",204
+                    else:
+                        return "",400
+                else: 
                     return "",400
             else: 
-                return "",400
+                return "",400    
         else: 
-            return "",400    
-    else: 
-        return "",400
+            return "",400
 
 
 @app.route('/get_user_data_by_token/',methods = ['GET'] )
 def get_user_data_by_token():
-    return 'Getting userdata by token!',200
+    token = request.headers.get("Token")
+    email = token_to_email(token)
+    print(loggedInUsers)
+    print(email)
+    if email:
+        data = database_helper.get_user_data(email)
+        return jsonify(data), 200
+    else: 
+        return "",401
+
 
 @app.route('/get_user_data_by_email/',methods = ['GET'] )
 def get_user_data_by_email():
-    return 'Get user data by email!',200
+    token = request.headers.get("Token")
+    useremail = token_to_email(token)
+    req_data = request.get_json()
+    email = req_data["email"]
+
+
+    if useremail and email:
+        data = database_helper.get_user_data(email)
+        return jsonify(data), 200
+    else: 
+        return "",401
+
 
 @app.route('/get_user_messages_by_token/',methods = ['GET'] )
 def get_user_messages_by_token():
-    return 'Singing in!',200
+    token = request.headers.get("Token")
+    email = token_to_email(token)
+
+    if email:
+        messages = database_helper.get_user_messages(email)
+        return jsonify(messages), 200
+    else:
+        return "",401
 
 @app.route('/get_user_messages_by_email/',methods = ['GET'] )
 def get_user_messages_by_email():
-    return 'Getting user messages by email!',200
+    token = request.headers.get("Token")
+    useremail = token_to_email(token)
+    req_data = request.get_json()
+    email = req_data["email"]
+    if email and useremail:
+        messages = database_helper.get_user_messages(email)
+        return jsonify(messages), 200
+    else:
+        return "",401
+
 
 @app.route('/post_message/',methods = ['POST'] )
 def post_message():
-    return 'Post Message!',200
+    token = request.headers.get("Token")
+    senderEmail = token_to_email(token)
+    req_data = request.get_json()
+    recieverEmail = req_data["email"]
+    message = req_data["message"]
+
+    if message and senderEmail and recieverEmail:
+
+        if database_helper.post_message(senderEmail, recieverEmail, message):
+
+            return "", 204
+        else:
+            return "",400
+
+    else:
+        return "", 400
+    
 
 if __name__ == '__main__':
     app.run(debug=True)

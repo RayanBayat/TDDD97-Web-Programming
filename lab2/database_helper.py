@@ -46,3 +46,37 @@ def update_user_password(email, password):
         return True
     except:
         return False
+
+def get_user_data(email):
+    cursor = get_db().execute("SELECT * FROM users WHERE email = ?;", [email])
+    matches = cursor.fetchall()
+    cursor.close()
+
+    result = []
+    for index in range(len(matches)):
+        result.append({'email': matches[index][0],
+                     'first_name': matches[index][2],  
+                     'family_name': matches[index][3],  
+                     'gender': matches[index][4],  
+                     'country': matches[index][5],  
+                     'city': matches[index][6]})
+    return result
+
+def get_user_messages(email):
+    cursor = get_db().execute("SELECT * FROM messages WHERE reciever = ?;", [email])
+    matches = cursor.fetchall()
+    cursor.close()
+
+    result = []
+    for index in range(len(matches)):
+        result.append({'messages': matches[index][1],
+                     'sender': matches[index][2]})
+    return result
+
+def post_message(senderEmail,recieverEmail, message):
+    try:    
+        get_db().execute('INSERT INTO messages (message,sender,reciever) values(?,?,?);', [message, senderEmail,recieverEmail])
+        get_db().commit()
+        return True
+    except:
+        return False
