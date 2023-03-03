@@ -47,7 +47,16 @@ def update_user_password(email, password):
     except:
         return False
 
-def get_user_data(email):
+def get_user_data(token,email = None):
+
+
+    myemail = get_email(token)
+
+    if myemail is None:
+        return None
+    if email is None:
+        email = myemail 
+
     cursor = get_db().execute("SELECT * FROM users WHERE email = ?;", [email])
     matches = cursor.fetchall()
     cursor.close()
@@ -62,7 +71,15 @@ def get_user_data(email):
                      'city': matches[index][6]})
     return result
 
-def get_user_messages(email):
+
+
+def get_user_messages(token,email = None):
+
+    myemail = get_email(token)
+    if myemail is None:
+        return None
+    if email is None:
+        email = myemail
     cursor = get_db().execute("SELECT * FROM messages WHERE reciever = ?;", [email])
     matches = cursor.fetchall()
     cursor.close()
@@ -73,9 +90,47 @@ def get_user_messages(email):
                      'sender': matches[index][2]})
     return result
 
-def post_message(senderEmail,recieverEmail, message):
-    try:    
-        get_db().execute('INSERT INTO messages (message,sender,reciever) values(?,?,?);', [message, senderEmail,recieverEmail])
+def post_message(token,recieverEmail, message):
+    
+    email = get_email(token)
+    if email is None:
+        return False
+    try:
+        get_db().execute('INSERT INTO messages (message,sender,reciever) values(?,?,?);', [message, email,recieverEmail])
+        get_db().commit()
+        return True
+    except:
+        return False
+
+def get_email(token):
+    cursor = get_db().execute("SELECT email FROM loggedInUsers WHERE token = ?;", [token])
+    matches = cursor.fetchall()
+    cursor.close()
+    if matches:
+        email = matches[0][0] 
+        return email
+    else:
+        return None
+    
+def add_token(email, token):
+    try: 
+        get_db().execute("INSERT INTO loggedInUsers values(?,?);", [token,email])
+        get_db().commit()
+        return True
+    except:
+        return False
+
+def delete_old_token_if_exist(email):
+    cursor = get_db().execute("SELECT token FROM loggedInUsers WHERE email = ?;", [email])
+    matches = cursor.fetchall()
+    cursor.close()
+    if matches:
+        token = matches[0][0]
+        remove_token(token)
+
+def remove_token(token):
+    try: 
+        get_db().execute("DELETE FROM loggedInUsers WHERE token = ?;", [token])
         get_db().commit()
         return True
     except:

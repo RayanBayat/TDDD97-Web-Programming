@@ -1,11 +1,13 @@
 
 # flask --app server --debug run                             to run in debug
-#insert into users values ("a@gmail.com","123","nigga","niggashaffa","bi","dick","boobies");
+# sqlite3 database.db < schema.sql
 
 from flask import Flask, request, jsonify
 
 import random
 import database_helper
+from email_validator import validate_email, EmailNotValidError
+import re
 
 app = Flask(__name__)
 
@@ -17,6 +19,14 @@ loggedIn = {
 }
 
 loggedInUsers = []
+
+def is_valid_email(email):
+    # define regular expression pattern for email validation
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    # use re.match to match the email address against the pattern
+    match = re.match(pattern, email)
+    return bool(match)
+
 
 def generate_token():
     letters = "abcdefghiklmnopqrstuvwwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
@@ -47,6 +57,7 @@ def sign_in():
 
     if email and password:
         if  len(password) < 30:
+            database_helper.delete_old_token_if_exist(email)        
             if database_helper.find_user(email, password):
                 token = generate_token()
                 loggedIn['token'] = token
@@ -54,7 +65,7 @@ def sign_in():
 
                 loggedInUsers.append(loggedIn) #needs sign out
 
-                print(loggedInUsers)
+                database_helper.add_token(email, token)
 
                 return jsonify({"token":token}),200
 
@@ -76,7 +87,7 @@ def sign_up():
     city = data['city']
     country = data['country']
 
-    if email and password and firstname and familyname and gender and city and country:
+    if email and password and firstname and familyname and gender and city and country and is_valid_email(email):
         if len(password) < 30 and len(password) > 6:
 
             if database_helper.create_user(email, password, firstname, familyname, gender, city, country):
@@ -93,59 +104,57 @@ def sign_up():
 @app.route('/sign_out/',methods = ['POST'] )
 def sign_out():
 
-    print ("Signing out")
-    print (loggedInUsers)
     token = request.headers.get("Token")
 
-    for i,loggedIn in enumerate(loggedInUsers):
-        if token == loggedIn["token"]:
-            loggedInUsers.pop(i)
-            print (loggedInUsers)
+
+    if database_helper.get_user_data(token) != None:
+        if database_helper.remove_token(token):
             return "",204
+    # for i,loggedIn in enumerate(loggedInUsers):
+    #     if token == loggedIn["token"]:
+    #         loggedInUsers.pop(i)
+    #         print (loggedInUsers)
             
             
+            
+        return "",401
     return "",401
 
-
-@app.route('/change_password/',methods = ['POST'] )
+@app.route('/change_password/',methods = ['PUT'] )
 def change_password():
     token = request.headers.get("Token")
     data = request.get_json()
     
     oldPassword = data['oldpsw']
     newPassword = data['newpsw']
-    email = token_to_email(token)
+    email = database_helper.get_email(token)
 
-    
-    if email:
 
-        if database_helper.find_user(email, oldPassword):
+    if database_helper.find_user(email, oldPassword):
+        
+        if oldPassword != newPassword:
             
-            if oldPassword != newPassword:
-                
-                if len(newPassword) > 6:
-                
-                    if database_helper.update_user_password(email, newPassword):
-                        
-                        return "",204
-                    else:
-                        return "",400
-                else: 
+            if len(newPassword) > 6:
+            
+                if database_helper.update_user_password(email, newPassword):
+                    
+                    return "",204
+                else:
                     return "",400
             else: 
-                return "",400    
+                return "",400
         else: 
-            return "",400
+            return "",400    
+    else: 
+        return "",400
 
 
 @app.route('/get_user_data_by_token/',methods = ['GET'] )
 def get_user_data_by_token():
     token = request.headers.get("Token")
-    email = token_to_email(token)
-    print(loggedInUsers)
-    print(email)
-    if email:
-        data = database_helper.get_user_data(email)
+
+    data = database_helper.get_user_data(token)
+    if data:
         return jsonify(data), 200
     else: 
         return "",401
@@ -154,14 +163,16 @@ def get_user_data_by_token():
 @app.route('/get_user_data_by_email/',methods = ['GET'] )
 def get_user_data_by_email():
     token = request.headers.get("Token")
-    useremail = token_to_email(token)
     req_data = request.get_json()
     email = req_data["email"]
 
 
-    if useremail and email:
-        data = database_helper.get_user_data(email)
-        return jsonify(data), 200
+    if email:
+        data = database_helper.get_user_data(token,email)
+        if data:
+            return jsonify(data), 200
+        else: 
+            return "",404
     else: 
         return "",401
 
@@ -169,23 +180,23 @@ def get_user_data_by_email():
 @app.route('/get_user_messages_by_token/',methods = ['GET'] )
 def get_user_messages_by_token():
     token = request.headers.get("Token")
-    email = token_to_email(token)
 
-    if email:
-        messages = database_helper.get_user_messages(email)
-        return jsonify(messages), 200
-    else:
-        return "",401
+
+
+    messages = database_helper.get_user_messages(token)
+    return jsonify(messages), 200
 
 @app.route('/get_user_messages_by_email/',methods = ['GET'] )
 def get_user_messages_by_email():
     token = request.headers.get("Token")
-    useremail = token_to_email(token)
     req_data = request.get_json()
     email = req_data["email"]
-    if email and useremail:
-        messages = database_helper.get_user_messages(email)
-        return jsonify(messages), 200
+    if email:
+        if database_helper.get_user_data(token,email):
+            messages = database_helper.get_user_messages(token,email)
+            return jsonify(messages), 200
+        else: 
+            return "",401
     else:
         return "",401
 
@@ -193,14 +204,13 @@ def get_user_messages_by_email():
 @app.route('/post_message/',methods = ['POST'] )
 def post_message():
     token = request.headers.get("Token")
-    senderEmail = token_to_email(token)
     req_data = request.get_json()
     recieverEmail = req_data["email"]
     message = req_data["message"]
 
-    if message and senderEmail and recieverEmail:
+    if message and recieverEmail:
 
-        if database_helper.post_message(senderEmail, recieverEmail, message):
+        if database_helper.post_message(token, recieverEmail, message):
 
             return "", 204
         else:
