@@ -93,12 +93,12 @@ def sign_up():
             if database_helper.create_user(email, password, firstname, familyname, gender, city, country):
                 return '',201
 
-            else:
+            else: #already exists
                 return "", 409
-        else:
+        else:# wrong syntax
             return '', 400
 
-    else: # wrong
+    else: # wrong syntax
         return '',400
 
 @app.route('/sign_out/',methods = ['POST'] )
@@ -109,16 +109,11 @@ def sign_out():
 
     if database_helper.get_user_data(token) != None:
         if database_helper.remove_token(token):
-            return "",204
-    # for i,loggedIn in enumerate(loggedInUsers):
-    #     if token == loggedIn["token"]:
-    #         loggedInUsers.pop(i)
-    #         print (loggedInUsers)
+            return "",204  #user successfully signed out
             
             
-            
-        return "",401
-    return "",401
+        return "",401 #token is  already invalid
+    return "",401 #Session does not exist
 
 @app.route('/change_password/',methods = ['PUT'] )
 def change_password():
@@ -139,13 +134,13 @@ def change_password():
                 if database_helper.update_user_password(email, newPassword):
                     
                     return "",204
-                else:
+                else: # bad syntax
                     return "",400
-            else: 
+            else: # bad syntax
                 return "",400
-        else: 
+        else: # bad syntax
             return "",400    
-    else: 
+    else: # bad syntax
         return "",400
 
 
@@ -156,7 +151,7 @@ def get_user_data_by_token():
     data = database_helper.get_user_data(token)
     if data:
         return jsonify(data), 200
-    else: 
+    else: #session does not exist
         return "",401
 
 
@@ -181,23 +176,25 @@ def get_user_data_by_email():
 def get_user_messages_by_token():
     token = request.headers.get("Authorization")
 
-
-
-    messages = database_helper.get_user_messages(token)
-    return jsonify(messages), 200
+    data = database_helper.get_user_data(token)
+    if data:
+        messages = database_helper.get_user_messages(token)
+        return jsonify(messages), 200
+    else: #session does not exist
+        return "",401
 
 @app.route('/get_user_messages_by_email/',methods = ['GET'] )
 def get_user_messages_by_email():
     token = request.headers.get("Authorization")
     req_data = request.get_json()
     email = req_data["email"]
-    if email:
+    if email and validate_email(email):
         if database_helper.get_user_data(token,email):
             messages = database_helper.get_user_messages(token,email)
             return jsonify(messages), 200
-        else: 
+        else: #person does not exist
             return "",404
-    else:
+    else:# invalid email
         return "",400
 
 
@@ -208,7 +205,7 @@ def post_message():
     recieverEmail = req_data["email"]
     message = req_data["message"]
 
-    if message and recieverEmail:
+    if message and recieverEmail and validate_email(recieverEmail):
 
         if database_helper.post_message(token, recieverEmail, message):
 
@@ -216,7 +213,7 @@ def post_message():
         else:
             return "",400
 
-    else:
+    else:# message is empty or email is invalid
         return "", 400
     
 
