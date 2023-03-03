@@ -104,7 +104,7 @@ def sign_up():
 @app.route('/sign_out/',methods = ['POST'] )
 def sign_out():
 
-    token = request.headers.get("Token")
+    token = request.headers.get("Authorization")
 
 
     if database_helper.get_user_data(token) != None:
@@ -122,7 +122,7 @@ def sign_out():
 
 @app.route('/change_password/',methods = ['PUT'] )
 def change_password():
-    token = request.headers.get("Token")
+    token = request.headers.get("Authorization")
     data = request.get_json()
     
     oldPassword = data['oldpsw']
@@ -151,7 +151,7 @@ def change_password():
 
 @app.route('/get_user_data_by_token/',methods = ['GET'] )
 def get_user_data_by_token():
-    token = request.headers.get("Token")
+    token = request.headers.get("Authorization")
 
     data = database_helper.get_user_data(token)
     if data:
@@ -162,7 +162,7 @@ def get_user_data_by_token():
 
 @app.route('/get_user_data_by_email/',methods = ['GET'] )
 def get_user_data_by_email():
-    token = request.headers.get("Token")
+    token = request.headers.get("Authorization")
     req_data = request.get_json()
     email = req_data["email"]
 
@@ -174,12 +174,12 @@ def get_user_data_by_email():
         else: 
             return "",404
     else: 
-        return "",401
+        return "",400
 
 
 @app.route('/get_user_messages_by_token/',methods = ['GET'] )
 def get_user_messages_by_token():
-    token = request.headers.get("Token")
+    token = request.headers.get("Authorization")
 
 
 
@@ -188,7 +188,7 @@ def get_user_messages_by_token():
 
 @app.route('/get_user_messages_by_email/',methods = ['GET'] )
 def get_user_messages_by_email():
-    token = request.headers.get("Token")
+    token = request.headers.get("Authorization")
     req_data = request.get_json()
     email = req_data["email"]
     if email:
@@ -196,14 +196,14 @@ def get_user_messages_by_email():
             messages = database_helper.get_user_messages(token,email)
             return jsonify(messages), 200
         else: 
-            return "",401
+            return "",404
     else:
-        return "",401
+        return "",400
 
 
 @app.route('/post_message/',methods = ['POST'] )
 def post_message():
-    token = request.headers.get("Token")
+    token = request.headers.get("Authorization")
     req_data = request.get_json()
     recieverEmail = req_data["email"]
     message = req_data["message"]
