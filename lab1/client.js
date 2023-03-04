@@ -111,11 +111,11 @@ function changePsw(event, form) {
             form.reset();
         }
         else {
-            handle_error("You've entered two different passwords");
+            handle_error("You've entered two different passwords",2);
         }
     }    
     else {
-        handle_error("Your old password is incorrect!");
+        handle_error("Your old password is incorrect!",2);
     }
 } 
 
