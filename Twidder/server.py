@@ -2,22 +2,39 @@
 # flask --app server --debug run                             to run in debug
 # sqlite3 database.db < schema.sql
 
+import socket
 from flask import Flask, request, jsonify
 
 import random
 import database_helper
 import re
+from flask_sock import Sock
 
 app = Flask(__name__)
 
+
+sock = Sock(app)
 # def validate_login(email,password):
 
-loggedIn = {
-    "email": "",
-    "token": ""
-}
 
-loggedInUsers = []
+
+loggedInUsers = {}
+
+
+@sock.route('/echo')
+def echo(ws):
+    while True:
+        token = ws.receive()
+        email = database_helper.get_email(token)
+        if email:
+            old_ws = loggedInUsers.get(email)
+            if old_ws:
+                old_ws.send("sign_out")
+            loggedInUsers[email] = ws
+        else:
+            break
+            
+
 
 def validate_email(email):
     # define regular expression pattern for email validation
@@ -49,7 +66,6 @@ def root():
 @app.route('/sign_in/',methods = ["POST"] )
 def sign_in():
 
-    print ( "Signing")
     data = request.get_json()
     email = data['email']
     password = data['password']
@@ -59,10 +75,6 @@ def sign_in():
             database_helper.delete_old_token_if_exist(email)        
             if database_helper.find_user(email, password):
                 token = generate_token()
-                loggedIn['token'] = token
-                loggedIn['email'] = email
-
-                loggedInUsers.append(loggedIn) #needs sign out
 
                 database_helper.add_token(email, token)
 

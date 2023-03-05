@@ -8,6 +8,7 @@ displayview = function()
     let token = getUserInfo(0);
     if (token != null) {
         displayProfile(token);
+        setupSession();
     }
     else {
         displayWelcome();
@@ -442,3 +443,28 @@ function signOut(token){
       persistLoggedInUsers();
   }
 }
+
+function setupSession() {
+    let token = getUserInfo(0);
+    let ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/echo`);
+
+    ws.onopen = function () {
+        ws.send(token);
+    };
+
+    ws.onmessage = function (message) {
+        if (message.data == "sign_out") {
+            signOut(token);
+            displayview();
+        } else {
+            data = JSON.parse(message.data);
+            updateLiveData(data);
+        }
+    };
+
+    // ws.onerror = function () {
+    //     // Sign out to be safe if an error occurs.
+    //     signOut();
+    // };
+}
+
