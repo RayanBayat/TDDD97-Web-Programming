@@ -130,3 +130,12 @@ textarea {
 .post, .test {
     flex-grow: 1;
 }
+
+canvas {
+  pointer-events: none;
+  display: block;
+  margin: auto;
+  border: 2px solid #ddd;
+  background-color: #f9f9f9;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}

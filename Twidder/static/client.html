@@ -7,7 +7,7 @@
     <link href="/static/client.css" rel="stylesheet" type="text/css">
     <script src="/static/client.js"></script>
     <script src="/static/serverHelper.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
     <script id="welcomeview" type="text/view">
         <section id="content">
@@ -80,6 +80,7 @@
                 <button class="tablinks" onclick="openTab(event, 'Home')" id="active">Home</button>
                 <button class="tablinks" onclick="openTab(event, 'Browser')">Browse</button>
                 <button class="tablinks" onclick="openTab(event, 'Account')">Account</button>
+                <button class="tablinks" onclick="openTab(event, 'LiveData')">LiveData</button>
                 <button class="tablinks" onclick="logOut()">Log Out</button>
               </section>
               
@@ -156,7 +157,17 @@
                 </form>
                 <section class="error"></section>
             </section>
+
             </section>
+            
+            <section id="LiveData" class="tabcontent">
+                <section class="form">
+                 <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+                </section>
+
+                
+            </section>
+
      </script>
 </head>
 
