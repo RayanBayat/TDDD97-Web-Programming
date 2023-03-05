@@ -337,7 +337,7 @@ function showPosts(t = null, e = null, index = 0) {
                         document.getElementsByClassName("postData")[index].style.display = "block";
                         document.getElementsByClassName("posts")[index].innerHTML = "";
                         msgData.forEach( element => {
-                            document.getElementsByClassName("posts")[index].innerHTML += "<p>"  + element.sender  + ": " + element.messages + "</p>";
+                            document.getElementsByClassName("posts")[index].innerHTML += "<h4>"  + element.sender + ":" + "</h4>" + '<p draggable="true" ondragstart="copyText(event)">' + element.messages + "</p>";
                         });
 
                         break;
@@ -365,7 +365,7 @@ function showPosts(t = null, e = null, index = 0) {
                         document.getElementsByClassName("posts")[index].innerHTML = "";
                         msgData.forEach(element => {
                             
-                            document.getElementsByClassName("posts")[index].innerHTML += "<p>"  +  element.sender + ": " + element.messages + "</p>";
+                            document.getElementsByClassName("posts")[index].innerHTML += "<h4>"  + element.sender + ":" + "</h4>" + '<p draggable="true" ondragstart="copyText(event)" >' + element.messages + "</p>";
                         });
                         break;
                     default:
@@ -377,7 +377,17 @@ function showPosts(t = null, e = null, index = 0) {
 
 
 }
-
+function allowDrop(ev) {
+    ev.preventDefault();
+  }
+function copyText(event) {
+    event.dataTransfer.setData("text", event.target.innerHTML);
+}
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.value = data;
+  }
 
 function getUser(event, form) {
     

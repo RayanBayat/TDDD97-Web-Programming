@@ -94,7 +94,7 @@
                 <section class="postData">
                     <h4>What's on your mind?</h4>
                     <form action="" onsubmit="post(event, this)">
-                        <textarea name="postMsg" id="" rows="5"></textarea>
+                        <textarea name="postMsg" id="" rows="5" ondrop="drop(event)" ondragover="allowDrop(event)"></textarea>
                         <button type="submit">Post</button>
                     </form>
                     <button onclick="showPosts()">Reload wall</button>
