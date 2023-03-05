@@ -6,13 +6,9 @@ from flask import Flask, request, jsonify
 
 import random
 import database_helper
-from email_validator import validate_email, EmailNotValidError
 import re
 
 app = Flask(__name__)
-
-# def validate_login(email,password):
-
 loggedIn = {
     "email": "",
     "token": ""
@@ -101,7 +97,7 @@ def sign_up():
     else: # wrong syntax
         return '',400
 
-@app.route('/sign_out/',methods = ['POST'] )
+@app.route('/sign_out/',methods = ['DELETE'] )
 def sign_out():
 
     token = request.headers.get("Authorization")
@@ -188,7 +184,7 @@ def get_user_messages_by_email():
     token = request.headers.get("Authorization")
     req_data = request.get_json()
     email = req_data["email"]
-    if email and validate_email(email):
+    if email and is_valid_email(email):
         if database_helper.get_user_data(token,email):
             messages = database_helper.get_user_messages(token,email)
             return jsonify(messages), 200
@@ -205,7 +201,7 @@ def post_message():
     recieverEmail = req_data["email"]
     message = req_data["message"]
 
-    if message and recieverEmail and validate_email(recieverEmail):
+    if message and recieverEmail and is_valid_email(recieverEmail):
 
         if database_helper.post_message(token, recieverEmail, message):
 

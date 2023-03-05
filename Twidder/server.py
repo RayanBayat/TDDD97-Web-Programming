@@ -47,8 +47,12 @@ def show_online_users():
     broadcast("Online," + str(database_helper.count_logged_in_users()))
 def broadcast(message):
     for user in loggedInUsers.values():
-
-        user.send(message)
+        try:
+            user.send(message)
+        except :
+            pass
+        
+        
 
 def validate_email(email):
     # define regular expression pattern for email validation
@@ -261,12 +265,18 @@ def post_message():
 def get_visits_count(email):
     ws = loggedInUsers.get(email)
     if ws:
-        ws.send("Visits,"+str(database_helper.count_visits(email)))
+        try:
+            ws.send("Visits,"+str(database_helper.count_visits(email)))
+        except:
+            pass
 
 def get_messages_count(email):
     ws = loggedInUsers.get(email)
     if ws:
-        ws.send("numMessages,"+str(database_helper.count_messages(email)))
+        try:
+            ws.send("numMessages,"+str(database_helper.count_messages(email)))
+        except:
+            pass
 
 if __name__ == '__main__':
     app.run(debug=True)
