@@ -8,7 +8,9 @@ CREATE TABLE users ( email VARCHAR(200) PRIMARY KEY,
                     lastname VARCHAR(200) NOT NULL,
                     gender VARCHAR(10) NOT NULL,
                     city VARCHAR(200) NOT NULL,
-                    country VARCHAR(200) NOT NULL);
+                    country VARCHAR(200) NOT NULL,
+                    visited INTEGER NOT NULL
+                    );
 
 CREATE Table loggedInUsers ( token VARCHAR(36) PRIMARY KEY,
                             email varchar(200) NOT NULL,

@@ -28,10 +28,10 @@ def find_user(userEmail, userPassword):
     else: 
         return False
 
-def create_user(email,password,firstname,familyname,gender,city,country):
+def create_user(email,password,firstname,familyname,gender,city,country,visited):
 
     try:
-        get_db().execute("INSERT INTO users values(?,?,?,?,?,?,?);", [email,password,firstname,familyname,gender,city,country])
+        get_db().execute("INSERT INTO users values(?,?,?,?,?,?,?,?);", [email,password,firstname,familyname,gender,city,country,visited])
         get_db().commit()
         return True
     except:
@@ -90,7 +90,7 @@ def get_user_messages(token,email = None):
     for index in range(len(matches)):
         result.append({'messages': matches[index][1],
                      'sender': matches[index][2]})
-    return result
+    return result[::-1]
 
 def post_message(token,recieverEmail, message):
     
@@ -137,3 +137,37 @@ def remove_token(token):
         return True
     except:
         return False
+    
+
+def count_messages(email):
+
+    cursor = get_db().execute("SELECT COUNT(*) FROM messages WHERE reciever =?;", [email])
+    matches = cursor.fetchall()
+    cursor.close()
+    if matches:
+        return matches[0][0]
+    else:
+        return 0
+
+def count_logged_in_users():
+    cursor = get_db().execute("SELECT COUNT(*) FROM loggedInUsers;")
+    matches = cursor.fetchall()
+    cursor.close()
+    if matches:
+        return matches[0][0]
+    
+
+def count_visits(email):
+    
+    cursor = get_db().execute("SELECT visited FROM users WHERE email =?;", [email])
+    matches = cursor.fetchall()
+    cursor.close()
+    if matches:
+        return matches[0][0]
+    else:
+        return 0
+
+def increment_visits(email):
+    get_db().execute("UPDATE users SET visited = visited + 1 WHERE email =?;", [email])
+    get_db().commit()
+    return True

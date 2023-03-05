@@ -1,6 +1,7 @@
-var loggedInUsers;
+let loggedInUsers, numMessages, visits, online;
 window.onload = function() {
     displayview();
+    updateChart();
  }
 
 displayview = function()
@@ -8,7 +9,7 @@ displayview = function()
     let token = getUserInfo(0);
     if (token != null) {
         displayProfile(token);
-        setupSession();
+        setupSession(token);
     }
     else {
         displayWelcome();
@@ -303,7 +304,7 @@ function post(event, form,  index = 0) {
 
 function showPosts(t = null, e = null, index = 0) {
 
-    let token, email;
+    let token, email,otherEmail;
     if (t == null) {
         token = getUserInfo(0);
     } else {
@@ -312,14 +313,17 @@ function showPosts(t = null, e = null, index = 0) {
     if (e == null) {
         
         email = getUserInfo(1);
+        otherEmail = e;
     } else {
+        otherEmail = document.getElementById("test").querySelector("#otherEmail");
         email = e;
     }
 
     let req = new XMLHttpRequest();
 
 
-    let otherEmail = document.getElementById("test").querySelector("#otherEmail");
+    
+  
     let msgData;
     if (otherEmail == null) {
 
@@ -333,6 +337,9 @@ function showPosts(t = null, e = null, index = 0) {
                 switch (req.status) {
                     case 200:
                         
+
+
+
                         msgData = JSON.parse(req.responseText);
                         document.getElementsByClassName("postData")[index].style.display = "block";
                         document.getElementsByClassName("posts")[index].innerHTML = "";
@@ -348,6 +355,8 @@ function showPosts(t = null, e = null, index = 0) {
 
         }
     } else {
+
+
         otherEmail = otherEmail.innerHTML;
         otherEmail = otherEmail.substring(otherEmail.indexOf(' ') + 1);
 
@@ -367,6 +376,7 @@ function showPosts(t = null, e = null, index = 0) {
                             
                             document.getElementsByClassName("posts")[index].innerHTML += "<h4>"  + element.sender + ":" + "</h4>" + '<p draggable="true" ondragstart="copyText(event)" >' + element.messages + "</p>";
                         });
+                       
                         break;
                     default:
                         break;
@@ -374,6 +384,7 @@ function showPosts(t = null, e = null, index = 0) {
             }
         }
     }   
+    
 
 
 }
@@ -408,7 +419,7 @@ function getUser(event, form) {
                     myData = JSON.parse(req.responseText);
         
                     userData = myData[0];
-                
+                    
                     document.getElementsByClassName("error")[1].style.display = "none";
                     showUserData(userData, 1);
                     showPosts(token, otherEmail, 1);
@@ -454,8 +465,8 @@ function signOut(token){
   }
 }
 
-function setupSession() {
-    let token = getUserInfo(0);
+function setupSession(token) {
+    // let token = getUserInfo(0);
     let ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/echo`);
 
     ws.onopen = function () {
@@ -466,15 +477,71 @@ function setupSession() {
         if (message.data == "sign_out") {
             signOut(token);
             displayview();
-        } else {
-            data = JSON.parse(message.data);
-            updateLiveData(data);
+        } else if(message.data.includes("Online")) {
+            
+            online = message.data.substring(message.data.indexOf(',') + 1);
+           
+            updateChart();
+            
+        } else if(message.data.includes("numMessages")) {
+
+            numMessages = message.data.substring(message.data.indexOf(',') + 1);
+           
+            updateChart();
+
+        } else if(message.data.includes("Visits")) {
+            visits = message.data.substring(message.data.indexOf(',') + 1);
+           
+            updateChart();
         }
     };
+  
 
-    // ws.onerror = function () {
-    //     // Sign out to be safe if an error occurs.
-    //     signOut();
-    // };
+    ws.onerror = function () {
+        // Sign out to be safe if an error occurs.
+        console.log("Sign out to be safe");
+    };
 }
+
+function updateChart() {
+    // Get the chart canvas element
+    const chartCanvas = document.getElementById("myChart");
+    var xValues = ["Online", "Visisted", "Messsages"];
+    let o = online;
+    let v = visits;
+    let m = numMessages;
+    var yValues = [o, v, m];
+    var barColors = ["red", "green","blue","orange","brown"];
+    // Create a new chart instance
+    const myChart = new Chart(chartCanvas, {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          legend: {display: false},
+          title: {
+            display: true,
+            text: "Live Statistics"
+          },
+          scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        },
+            tooltips: {
+                enabled: true,
+                mode: 'index',
+                intersect: false,
+                position: 'nearest',
+            }
+        }
+      });
+  }
 
