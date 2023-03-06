@@ -8,7 +8,7 @@ source virtualpython/bin/activate
 
 pip install flask
 
-pip install sqlite3
+pip install flask_sock
 
 pip install gunicorn
 
