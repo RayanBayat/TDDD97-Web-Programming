@@ -25,4 +25,4 @@ flask --app server --debug run
 
 cd Twidder
 
-gunicorn -b 0.0.0.0:5000 --workers 1 --threads 100 server:app
+gunicorn -b 127.0.0.1:5000 --workers 1 --threads 100 server:app
